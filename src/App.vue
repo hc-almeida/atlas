@@ -281,6 +281,63 @@
       </section>
 
       <section v-else-if="currentTab === 'alunos'" class="flex flex-col gap-6">
+        <section class="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <article class="rounded-2xl bg-white p-5 shadow-sm">
+            <p class="text-sm font-medium text-slate-500">Risco de Evasão Crítico</p>
+            <p class="mt-1 text-3xl font-semibold tracking-tight text-slate-900">14 alunos</p>
+            <p class="mt-2 text-xs font-medium text-rose-600">Impacto projetado: -R$ 21.000/mês</p>
+          </article>
+
+          <article class="rounded-2xl bg-white p-5 shadow-sm">
+            <p class="text-sm font-medium text-slate-500">Anomalias de Desempenho</p>
+            <p class="mt-1 text-3xl font-semibold tracking-tight text-slate-900">28 alertas</p>
+            <p class="mt-2 text-xs font-medium text-slate-500">Maior concentração no 1º Ano Médio</p>
+          </article>
+
+          <article class="rounded-2xl bg-white p-5 shadow-sm">
+            <p class="text-sm font-medium text-slate-500">Resgates Bem-sucedidos</p>
+            <p class="mt-1 text-3xl font-semibold tracking-tight text-slate-900">5 alunos</p>
+            <p class="mt-2 text-xs font-medium text-emerald-600">Retornaram ao status Estável nesta semana</p>
+          </article>
+        </section>
+
+        <section class="rounded-2xl bg-white p-4 shadow-sm">
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="h-10 rounded-full px-4 text-sm font-semibold transition"
+              :class="filterPillClass('Todos')"
+              @click="currentFilter = 'Todos'"
+            >
+              Todos os alunos
+            </button>
+            <button
+              type="button"
+              class="h-10 rounded-full px-4 text-sm font-semibold transition"
+              :class="filterPillClass('Risco Crítico')"
+              @click="currentFilter = 'Risco Crítico'"
+            >
+              🔴 Apenas Risco Crítico
+            </button>
+            <button
+              type="button"
+              class="h-10 rounded-full px-4 text-sm font-semibold transition"
+              :class="filterPillClass('Queda em Exatas')"
+              @click="currentFilter = 'Queda em Exatas'"
+            >
+              📉 Queda em Exatas
+            </button>
+            <button
+              type="button"
+              class="h-10 rounded-full px-4 text-sm font-semibold transition"
+              :class="filterPillClass('Alerta Financeiro')"
+              @click="currentFilter = 'Alerta Financeiro'"
+            >
+              💰 Alerta Financeiro
+            </button>
+          </div>
+        </section>
+
         <article class="rounded-2xl bg-white p-5 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
           <div class="flex flex-col gap-1 pb-4">
             <h2 class="text-xl font-semibold text-slate-900">Alunos com Monitoramento Preditivo</h2>
@@ -299,7 +356,7 @@
               </thead>
               <tbody class="divide-y divide-slate-200 bg-white text-sm">
                 <tr
-                  v-for="student in studentsData"
+                  v-for="student in filteredStudents"
                   :key="student.id"
                   class="cursor-pointer transition hover:bg-slate-50"
                   @click="selectedStudent = student"
@@ -367,6 +424,68 @@
       </section>
 
       <section v-else-if="currentTab === 'financeiro'" class="flex flex-col gap-6">
+        <article class="rounded-2xl bg-white p-5 shadow-sm">
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div class="flex flex-col gap-1">
+              <h2 class="text-xl font-semibold text-slate-900">Previsão de Receita do Mês</h2>
+              <p class="text-sm text-slate-600">
+                A IA ajusta a projeção considerando inadimplência crônica, anomalias de atraso e recuperação provável.
+              </p>
+            </div>
+            <span class="rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold text-cyan-700">Ajuste Preditivo</span>
+          </div>
+
+          <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="rounded-xl bg-slate-100 p-4">
+              <p class="text-xs uppercase tracking-wide text-slate-500">Receita Esperada (ERP)</p>
+              <p class="mt-1 text-2xl font-semibold text-slate-900">R$ 520.000</p>
+              <p class="mt-1 text-xs text-slate-500">Composição: 85% Mensalidades regulares | 15% Taxas extras</p>
+            </div>
+            <div class="rounded-xl bg-cyan-50 p-4">
+              <p class="text-xs uppercase tracking-wide text-cyan-700">Receita Realista (Ajuste IA)</p>
+              <p class="mt-1 text-2xl font-semibold text-cyan-900">R$ 435.000</p>
+            </div>
+          </div>
+
+          <p class="mt-3 text-sm text-slate-600">
+            Insight IA: a previsão foi ajustada em <strong class="text-slate-900">R$ 85 mil</strong> com base no padrão de
+            inadimplência recorrente e probabilidade de recuperação parcial neste ciclo.
+          </p>
+
+          <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+            <div class="rounded-xl border border-rose-100 bg-rose-50 p-4">
+              <p class="text-sm font-semibold text-slate-900">Detalhamento da Retenção da IA (-R$ 85.000)</p>
+              <ul class="mt-2 space-y-1 text-xs text-slate-600">
+                <li class="flex items-center justify-between gap-2">
+                  <span>Inadimplência crônica projetada</span>
+                  <span class="font-semibold text-rose-600">-R$ 50.000</span>
+                </li>
+                <li class="flex items-center justify-between gap-2">
+                  <span>Risco alto de evasão no mês</span>
+                  <span class="font-semibold text-rose-600">-R$ 35.000</span>
+                </li>
+              </ul>
+            </div>
+            <div class="rounded-xl border border-cyan-100 bg-cyan-50 p-4">
+              <p class="text-sm font-semibold text-slate-900">Ações Recomendadas para Recuperação</p>
+              <div class="mt-2 flex flex-col gap-2">
+                <button
+                  type="button"
+                  class="h-9 rounded-lg bg-cyan-600 px-3 text-left text-xs font-semibold text-white transition hover:bg-cyan-700"
+                >
+                  ✨ Lançar campanha de desconto pontualidade
+                </button>
+                <button
+                  type="button"
+                  class="h-9 rounded-lg bg-slate-800 px-3 text-left text-xs font-semibold text-white transition hover:bg-slate-700"
+                >
+                  ✨ Gerar propostas de parcelamento em lote
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
         <article class="rounded-2xl bg-white p-5 shadow-md">
           <div class="flex flex-col gap-1 pb-4">
             <h2 class="text-xl font-semibold text-slate-900">Cobrança Inteligente</h2>
@@ -397,7 +516,7 @@
                   <td class="px-4 py-3">
                     <button
                       type="button"
-                      class="h-10 rounded-xl px-4 text-sm font-semibold text-white shadow-sm transition"
+                      class="h-10 w-40 rounded-xl px-4 text-sm font-semibold text-white shadow-sm transition"
                       :class="entry.status === 'Atraso Anômalo' ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-slate-800 hover:bg-slate-700'"
                     >
                       {{ entry.status === 'Atraso Anômalo' ? 'Gerar Acordo' : 'Notificar' }}
@@ -479,7 +598,7 @@
     >
       <aside
         v-if="selectedStudent"
-        class="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col gap-5 bg-white p-5 shadow-2xl"
+        class="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col gap-5 overflow-y-auto bg-white p-5 pb-8 shadow-2xl"
       >
         <div class="flex items-start justify-between">
           <div class="flex items-center gap-3">
@@ -524,8 +643,84 @@
 
         <div class="rounded-2xl bg-slate-900 p-4 text-white">
           <p class="text-xs uppercase tracking-wide text-slate-300">Risk Score</p>
-          <p class="mt-1 text-3xl font-semibold">{{ selectedStudent.riskScore }}</p>
-          <p class="mt-1 text-sm text-slate-300">{{ selectedStudent.status }}</p>
+          <div class="mt-1 flex items-end justify-between gap-3">
+            <p class="text-3xl font-semibold transition-all duration-300">{{ displayedRiskScore }}</p>
+            <span class="rounded-full px-2.5 py-1 text-xs font-semibold" :class="riskStatusTagClass">
+              {{ displayedRiskStatus }}
+            </span>
+          </div>
+          <p class="mt-2 text-xs font-medium text-cyan-300">{{ riskPanelTitle }}</p>
+          <div class="mt-3 overflow-hidden rounded-xl bg-slate-800/80 p-3">
+            <div v-for="item in riskBreakdownItems" :key="item.label" class="mb-2 last:mb-0">
+              <div class="mb-1 flex items-center justify-between text-xs text-slate-200">
+                <span>{{ item.label }}</span>
+                <span>{{ item.value }}%</span>
+              </div>
+              <div class="h-2 rounded-full bg-slate-700">
+                <div class="h-2 rounded-full bg-cyan-400 transition-all duration-300" :style="{ width: `${item.value}%` }"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p class="text-sm font-semibold text-slate-900">{{ isStableSelected ? 'Ações de Engajamento' : 'Simulador de Ação (E se?)' }}</p>
+          <p class="mt-1 text-xs text-slate-500">Selecione uma ação para visualizar o impacto estimado no risco.</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button
+              v-for="option in simulationOptions"
+              :key="option.value"
+              type="button"
+              class="h-10 rounded-xl px-4 text-sm font-semibold transition"
+              :class="
+                selectedSimulation === option.value
+                  ? 'bg-cyan-600 text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              "
+              @click="selectedSimulation = option.value"
+            >
+              {{ option.label }}
+            </button>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-cyan-200 bg-cyan-50 p-4">
+          <button
+            type="button"
+            class="h-10 w-full rounded-xl bg-cyan-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-cyan-700"
+            @click="showAICopilot = !showAICopilot"
+          >
+            {{ isStableSelected ? '✨ Gerar Mensagem de Reconhecimento' : '✨ Gerar Mensagem de Acolhimento' }}
+          </button>
+
+          <transition
+            enter-active-class="transition-all duration-300 ease-out"
+            enter-from-class="opacity-0 max-h-0"
+            enter-to-class="opacity-100 max-h-80"
+            leave-active-class="transition-all duration-200 ease-in"
+            leave-from-class="opacity-100 max-h-80"
+            leave-to-class="opacity-0 max-h-0"
+          >
+            <div v-if="showAICopilot" class="mt-3 overflow-hidden rounded-xl border border-cyan-200 bg-white p-3">
+              <p class="text-xs uppercase tracking-wide text-cyan-700">Rascunho Gerado por IA</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-700">{{ generatedCareMessage }}</p>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  class="h-10 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-700"
+                  @click="copyCareMessage"
+                >
+                  {{ copiedMessage ? 'Copiado!' : 'Copiar' }}
+                </button>
+                <button
+                  type="button"
+                  class="h-10 rounded-xl bg-emerald-600 px-4 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                >
+                  Enviar via WhatsApp
+                </button>
+              </div>
+            </div>
+          </transition>
         </div>
       </aside>
     </transition>
@@ -533,10 +728,14 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref, onMounted } from 'vue'
+import { computed, reactive, ref, onMounted, watch } from 'vue'
 
 const currentTab = ref('dashboard')
 const selectedStudent = ref(null)
+const currentFilter = ref('Todos')
+const showAICopilot = ref(false)
+const copiedMessage = ref(false)
+const selectedSimulation = ref('none')
 
 const atlasData = reactive({
   school_info: { name: 'Colégio Atlas', manager_name: 'Carlos', current_date: '2026-03-17' },
@@ -622,6 +821,76 @@ const studentsData = reactive([
     kpis: { attendance: '98%', average: '8.9', financial: 'Em dia' },
     ai_analysis:
       'Alto engajamento. Padrão compatível com aprovação em vestibulares de ponta.'
+  },
+  {
+    id: 4,
+    name: 'Gabriel Nunes',
+    grade: '8º Ano A',
+    riskScore: 88,
+    status: 'Risco Crítico',
+    kpis: { attendance: '74%', average: '5.0', financial: '20 dias atraso' },
+    ai_analysis:
+      'Sinais combinados de evasão: faltas recorrentes, queda em matemática e atraso financeiro atípico no último mês.'
+  },
+  {
+    id: 5,
+    name: 'Ana Clara Pereira',
+    grade: '2º Ano Médio',
+    riskScore: 66,
+    status: 'Atenção',
+    kpis: { attendance: '88%', average: '6.4', financial: 'Em dia' },
+    ai_analysis:
+      'Queda de desempenho em exatas nas últimas avaliações e redução de participação em atividades de reforço.'
+  },
+  {
+    id: 6,
+    name: 'Rafael Costa',
+    grade: '1º Ano Médio',
+    riskScore: 52,
+    status: 'Atenção',
+    kpis: { attendance: '91%', average: '6.1', financial: '8 dias atraso' },
+    ai_analysis:
+      'Padrão de oscilação acadêmica em matemática e início de atraso financeiro leve; sugerida mentoria preventiva.'
+  },
+  {
+    id: 7,
+    name: 'Juliana Martins',
+    grade: '7º Ano C',
+    riskScore: 14,
+    status: 'Estável',
+    kpis: { attendance: '97%', average: '8.7', financial: 'Em dia' },
+    ai_analysis:
+      'Rotina consistente, evolução contínua e alta participação em projetos; perfil acadêmico estável e colaborativo.'
+  },
+  {
+    id: 8,
+    name: 'Pedro Henrique',
+    grade: '3º Ano Médio',
+    riskScore: 84,
+    status: 'Risco Crítico',
+    kpis: { attendance: '76%', average: '5.4', financial: '18 dias atraso' },
+    ai_analysis:
+      'Queda acentuada em exatas, faltas consecutivas e atraso financeiro persistente elevam risco de evasão no trimestre.'
+  },
+  {
+    id: 9,
+    name: 'Larissa Melo',
+    grade: '6º Ano B',
+    riskScore: 44,
+    status: 'Atenção',
+    kpis: { attendance: '93%', average: '6.9', financial: 'Em dia' },
+    ai_analysis:
+      'Oscilação de notas em matemática e redução de engajamento no portal nas últimas duas semanas.'
+  },
+  {
+    id: 10,
+    name: 'Thiago Almeida',
+    grade: '9º Ano A',
+    riskScore: 9,
+    status: 'Estável',
+    kpis: { attendance: '99%', average: '9.1', financial: 'Em dia' },
+    ai_analysis:
+      'Desempenho acadêmico excelente, presença alta e comportamento financeiro regular da família.'
   }
 ])
 
@@ -783,6 +1052,212 @@ const riskBadgeClass = (score) => {
   if (score < 20) return 'bg-emerald-100 text-emerald-700'
   return 'bg-slate-100 text-slate-700'
 }
+
+const filteredStudents = computed(() => {
+  if (currentFilter.value === 'Todos') return studentsData
+
+  if (currentFilter.value === 'Risco Crítico') {
+    return studentsData.filter((student) => student.status === 'Risco Crítico')
+  }
+
+  if (currentFilter.value === 'Queda em Exatas') {
+    return studentsData.filter((student) => {
+      const analysis = student.ai_analysis.toLowerCase()
+      return analysis.includes('exatas') || analysis.includes('matemática') || analysis.includes('matematica')
+    })
+  }
+
+  if (currentFilter.value === 'Alerta Financeiro') {
+    return studentsData.filter((student) => student.kpis.financial !== 'Em dia')
+  }
+
+  return studentsData
+})
+
+const filterPillClass = (filter) => {
+  if (currentFilter.value === filter) return 'bg-slate-900 text-white'
+  return 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+}
+
+const regularSimulationOptions = [
+  { value: 'none', label: 'Sem ação' },
+  { value: 'scholarship_10', label: 'Conceder bolsa de 10%' },
+  { value: 'payment_plan', label: 'Acordo de parcelamento' }
+]
+
+const stableSimulationOptions = [
+  { value: 'none', label: 'Manter acompanhamento' },
+  { value: 'mentorship_program', label: 'Convidar para Programa de Monitoria' },
+  { value: 'olympiad_challenge', label: 'Oferecer desafio extra (Olimpíadas)' }
+]
+
+const simulatedRiskMap = {
+  1: { none: 85, scholarship_10: 28, payment_plan: 20 },
+  2: { none: 60, scholarship_10: 48, payment_plan: 35 },
+  3: { none: 12, mentorship_program: 9, olympiad_challenge: 8 }
+}
+
+const riskBreakdownBySimulation = {
+  1: {
+    none: [
+      { label: 'Faltas recentes', value: 40 },
+      { label: 'Sinal financeiro', value: 35 },
+      { label: 'Queda em exatas', value: 10 }
+    ],
+    scholarship_10: [
+      { label: 'Faltas recentes', value: 14 },
+      { label: 'Sinal financeiro', value: 6 },
+      { label: 'Queda em exatas', value: 8 }
+    ],
+    payment_plan: [
+      { label: 'Faltas recentes', value: 10 },
+      { label: 'Sinal financeiro', value: 2 },
+      { label: 'Queda em exatas', value: 8 }
+    ]
+  },
+  2: {
+    none: [
+      { label: 'Queda de notas', value: 30 },
+      { label: 'Sinal financeiro', value: 12 },
+      { label: 'Baixo acesso ao portal', value: 18 }
+    ],
+    scholarship_10: [
+      { label: 'Queda de notas', value: 24 },
+      { label: 'Sinal financeiro', value: 7 },
+      { label: 'Baixo acesso ao portal', value: 17 }
+    ],
+    payment_plan: [
+      { label: 'Queda de notas', value: 18 },
+      { label: 'Sinal financeiro', value: 3 },
+      { label: 'Baixo acesso ao portal', value: 14 }
+    ]
+  }
+}
+
+const retentionIndicatorsBySimulation = {
+  3: {
+    none: [
+      { label: 'Engajamento Acadêmico', value: 94 },
+      { label: 'Saúde Financeira', value: 98 },
+      { label: 'Frequência', value: 96 }
+    ],
+    mentorship_program: [
+      { label: 'Engajamento Acadêmico', value: 97 },
+      { label: 'Saúde Financeira', value: 98 },
+      { label: 'Frequência', value: 96 }
+    ],
+    olympiad_challenge: [
+      { label: 'Engajamento Acadêmico', value: 99 },
+      { label: 'Saúde Financeira', value: 98 },
+      { label: 'Frequência', value: 97 }
+    ]
+  }
+}
+
+const isStableSelected = computed(() => selectedStudent.value?.status === 'Estável')
+
+const simulationOptions = computed(() => {
+  return isStableSelected.value ? stableSimulationOptions : regularSimulationOptions
+})
+
+const displayedRiskScore = computed(() => {
+  if (!selectedStudent.value) return 0
+
+  const studentSimulation = simulatedRiskMap[selectedStudent.value.id]
+  if (!studentSimulation) return selectedStudent.value.riskScore
+
+  return studentSimulation[selectedSimulation.value] ?? selectedStudent.value.riskScore
+})
+
+const displayedRiskStatus = computed(() => {
+  if (displayedRiskScore.value > 80) return 'Risco Crítico'
+  if (displayedRiskScore.value > 50) return 'Atenção'
+  if (displayedRiskScore.value < 20) return 'Estável'
+  return 'Monitorar'
+})
+
+const riskPanelTitle = computed(() => {
+  return isStableSelected.value ? 'Indicadores de Retenção' : 'Composição do risco'
+})
+
+const riskStatusTagClass = computed(() => {
+  if (displayedRiskStatus.value === 'Risco Crítico') return 'bg-rose-500/20 text-rose-400'
+  if (displayedRiskStatus.value === 'Atenção') return 'bg-amber-500/20 text-amber-400'
+  if (displayedRiskStatus.value === 'Estável') return 'bg-emerald-500/20 text-emerald-400'
+  return 'bg-cyan-500/20 text-cyan-300'
+})
+
+const riskBreakdownItems = computed(() => {
+  if (!selectedStudent.value) return []
+
+  const studentData = isStableSelected.value
+    ? retentionIndicatorsBySimulation[selectedStudent.value.id]
+    : riskBreakdownBySimulation[selectedStudent.value.id]
+
+  if (!studentData) {
+    if (isStableSelected.value) {
+      return [
+        { label: 'Engajamento Acadêmico', value: 94 },
+        { label: 'Saúde Financeira', value: 98 },
+        { label: 'Frequência', value: 96 }
+      ]
+    }
+
+    const base = displayedRiskScore.value
+    const finance = Math.max(5, Math.round(base * 0.35))
+    const attendance = Math.max(5, Math.round(base * 0.4))
+    const performance = Math.max(5, base - finance - attendance)
+    return [
+      { label: 'Faltas recentes', value: attendance },
+      { label: 'Sinal financeiro', value: finance },
+      { label: 'Queda em exatas', value: performance }
+    ]
+  }
+
+  return studentData[selectedSimulation.value] ?? studentData.none ?? []
+})
+
+const generatedCareMessage = computed(() => {
+  if (!selectedStudent.value) return ''
+
+  if (isStableSelected.value) {
+    return `Olá família, ${selectedStudent.value.name} teve um excelente desempenho recente e gostaríamos de reconhecer esse resultado. Estamos convidando a estudante para novas oportunidades de protagonismo acadêmico.`
+  }
+
+  return `Olá família da ${selectedStudent.value.name}, notamos algumas ausências recentes e gostaríamos de agendar um café para conversar sobre como podemos apoiar o desenvolvimento acadêmico da(o) estudante com acolhimento e parceria.`
+})
+
+const copyCareMessage = async () => {
+  if (!generatedCareMessage.value) return
+
+  try {
+    await navigator.clipboard.writeText(generatedCareMessage.value)
+    copiedMessage.value = true
+    setTimeout(() => {
+      copiedMessage.value = false
+    }, 1800)
+  } catch {
+    copiedMessage.value = false
+  }
+}
+
+watch(
+  () => selectedStudent.value,
+  () => {
+    showAICopilot.value = false
+    copiedMessage.value = false
+    selectedSimulation.value = 'none'
+  }
+)
+
+watch(
+  () => simulationOptions.value,
+  (options) => {
+    if (!options.some((option) => option.value === selectedSimulation.value)) {
+      selectedSimulation.value = options[0]?.value ?? 'none'
+    }
+  }
+)
 </script>
 
 <style scoped>
